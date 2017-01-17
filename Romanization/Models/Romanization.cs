@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -70,6 +71,7 @@ namespace Romanization.Models
             public string errorMessage { get; set; }
             public string errorCode { get; set; }
             public string name { get; set; }
+            public List<AItem> nameList { get; set; }
         }
 
         /// <summary>
