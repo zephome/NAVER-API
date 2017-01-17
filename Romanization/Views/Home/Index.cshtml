@@ -7,24 +7,6 @@
 @section Scripts {
     <script type="text/javascript">
         $(function () {
-            // 페이지가 로딩될 때 'Loading 이미지'를 숨긴다.
-            $('#viewLoading').hide();
-
-            // ajax 실행 및 완료시 'Loading 이미지'의 동작을 컨트롤하자.
-            $('#viewLoading').ajaxStart(function () {
-                // 로딩이미지의 위치 및 크기조절
-                $('#viewLoading').css('position', 'absolute');
-                $('#viewLoading').css('left', $('#loadData').offset().left);
-                $('#viewLoading').css('top', $('#loadData').offset().top);
-                $('#viewLoading').css('width', $('#loadData').css('width'));
-                $('#viewLoading').css('height', $('#loadData').css('height'));
-                console.log("show1");
-                $(this).fadeIn(500);
-            }).ajaxStop(function () {
-                console.log("hide1");
-                $(this).fadeOut(500);
-            });
-
             // 한글, 로마 변환
             $("#btnConvert").on("click", function (e) {
                 var value = $("#korean-name").val();
