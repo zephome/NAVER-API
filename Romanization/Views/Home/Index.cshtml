@@ -7,6 +7,24 @@
 @section Scripts {
     <script type="text/javascript">
         $(function () {
+            // 페이지가 로딩될 때 'Loading 이미지'를 숨긴다.
+            $('#viewLoading').hide();
+
+            // ajax 실행 및 완료시 'Loading 이미지'의 동작을 컨트롤하자.
+            $('#viewLoading').ajaxStart(function () {
+                // 로딩이미지의 위치 및 크기조절
+                $('#viewLoading').css('position', 'absolute');
+                $('#viewLoading').css('left', $('#loadData').offset().left);
+                $('#viewLoading').css('top', $('#loadData').offset().top);
+                $('#viewLoading').css('width', $('#loadData').css('width'));
+                $('#viewLoading').css('height', $('#loadData').css('height'));
+                console.log("show1");
+                $(this).fadeIn(500);
+            }).ajaxStop(function () {
+                console.log("hide1");
+                $(this).fadeOut(500);
+            });
+
             // 한글, 로마 변환
             $("#btnConvert").on("click", function (e) {
                 var value = $("#korean-name").val();
@@ -17,6 +35,12 @@
                     dataType: "json",
                     cache: false,
                     data: { query: value },
+                    beforeSend: function () {
+                        $(".loading").toggle();
+                    },
+                    complete: function () {
+                        $(".loading").toggle();
+                    },
                     success: function (data) {
                         var response = data;
                         var nameList = response.nameList;
@@ -53,8 +77,37 @@
     </script>
 }
 
+<style>
+    .loading { /*로딩 이미지*/
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        margin-left: -21px;
+        margin-top: -21px;
+        z-index: 10000;
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% {transform: rotate(0deg);}
+        100% {transform: rotate(360deg);}
+    }
+</style>
+
 <div class="page-header">
     <h1>한글 이름 -> 로마자 변환</h1>
+</div>
+
+<div class="loading" style="display:none;">
+    <div class="loader"></div>
 </div>
 
 <form class="form-inline">
