@@ -4,16 +4,74 @@
     Layout = "~/Views/Shared/_LayoutPage.cshtml";
 }
 
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            // 한글, 로마 변환
+            $("#btnConvert").on("click", function (e) {
+                var value = $("#korean-name").val();
+
+                $.ajax({
+                    url: '@Url.Action("Romanization", "Home")',
+                    type: "get",
+                    dataType: "json",
+                    cache: false,
+                    data: { query: value },
+                    success: function (data) {
+                        var response = data;
+                        var nameList = response.nameList;
+
+                        // 성공
+                        if (response.statusCode == "200" && response.errorCode != "999") {
+                            $("#english-name").html(response.name);
+
+                            // 아이템, 변환 이름 목록 초기화
+                            var items = [];
+                            $('#name-list li.items-list').remove();
+
+                            // 변환 이름 목록 추가
+                            $.each(nameList, function (k, v) {
+                                items.push('<li class="list-group-item items-list"><span class="badge">' + v.score + '</span>' + v.name + '</li>');
+                            });
+
+                            // 변환 이름 목록 바인딩
+                            $("#name-list").append(items.join(''));
+                        } else {
+                            $("#english-name").html("");
+                            $('#name-list li.items-list').remove();
+                            alert(response.errorMessage);
+                        }
+                    },
+                    error: function () {
+                        alert("데이터 통신이 원활하지 않습니다.");
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
+}
+
 <div class="page-header">
     <h1>한글 이름 -> 로마자 변환</h1>
 </div>
 
 <form class="form-inline">
     <div class="form-group">
-        <label class="sr-only" for="exampleInputEmail3">Email address</label>
-        <input type="text" class="form-control" id="korean-name" placeholder="이름 입력">
+        <input type="text" class="form-control" id="korean-name" value="홍길동" placeholder="이름 입력">
     </div>
     <a id="btnConvert" class="btn btn-default">검색</a>
 </form>
 
-<h2>전체 목록 표시</h2>
+<hr />
+
+<ul class="list-group">
+    <li class="list-group-item active">추천 이름</li>
+    <li class="list-group-item"><span id="english-name"></span></li>
+</ul>
+
+<ul id="name-list" class="list-group">
+    <li class="list-group-item active">변환 이름 목록</li>
+    <li class="list-group-item items-list">목록 없음</li>
+</ul>
